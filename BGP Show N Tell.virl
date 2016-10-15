@@ -1,0 +1,1354 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<topology xmlns="http://www.cisco.com/VIRL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" schemaVersion="0.9" simulationEngine="OPENSTACK" xsi:schemaLocation="http://www.cisco.com/VIRL https://raw.github.com/CiscoVIRL/schema/v0.9/virl.xsd">
+    <node name="R1" type="SIMPLE" subtype="IOSv" location="128,202" ipv4="192.168.0.1">
+        <extensions>
+            <entry key="AutoNetkit.mgmt_ip" type="string"></entry>
+            <entry key="config" type="String">!
+! Last configuration change at 02:37:07 UTC Thu Jul 7 2016
+!
+version 15.6
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname R1
+!
+boot-start-marker
+boot-end-marker
+!
+!
+vrf definition Mgmt-intf
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+enable password cisco
+!
+no aaa new-model
+ethernet lmi ce
+!
+!
+!
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+username cisco privilege 15 secret 5 $1$5epV$pPXCTZlWZPtxoN6d1hWmw0
+!
+redundancy
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ description Loopback
+ ip address 10.100.100.1 255.255.255.255
+ ip ospf 100 area 0
+ ipv6 address 2001:DB8:1:1::1/128
+ ipv6 ospf 6 area 0
+!
+interface GigabitEthernet0/0
+ description OOB Management
+ vrf forwarding Mgmt-intf
+ ip address 10.255.0.80 255.255.0.0
+ duplex full
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/1
+ description to R2
+ ip address 10.1.2.1 255.255.255.0
+ ip ospf 100 area 0
+ duplex full
+ speed auto
+ media-type rj45
+ ipv6 address FE80::1 link-local
+ ipv6 address 2001:DB8:1:2::1/64
+ mpls ip
+ ipv6 ospf 6 area 0
+!
+interface GigabitEthernet0/2
+ description to R3
+ ip address 10.1.3.1 255.255.255.0
+ ip ospf 100 area 0
+ duplex full
+ speed auto
+ media-type rj45
+ ipv6 address FE80::1 link-local
+ ipv6 address 2001:DB8:1:3::1/64
+ mpls ip
+ ipv6 ospf 6 area 0
+!
+router ospfv3 6
+ router-id 10.100.100.1
+ !
+ address-family ipv6 unicast
+ exit-address-family
+!
+router ospf 100
+ router-id 10.100.100.1
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+ip ssh server algorithm authentication password
+!
+!
+!
+mpls ldp router-id Loopback0
+!
+control-plane
+!
+alias exec sib show ip int brief
+alias exec sir show ip route
+alias exec son show ip ospf nei
+alias exec soi show ip ospf interface
+alias exec soib show ip ospf interface brief
+alias exec m wr mem
+alias exec bgps show ip bgp sum
+alias exec bgp show ip bgp
+alias exec srs show run | section
+alias exec sri show run | include
+alias exec ct confi t
+alias exec cdpi show cdp interface
+alias exec cdpn show cdp neigh
+alias exec sir6 show ipv6 route
+alias exec bgp6s sh ip bgp ipv6 unicast summary
+alias exec bgp6 sh ip bgp ipv6 unicast
+alias exec sib6 sh ipv6 interface brief
+alias exec soi6b sh ipv6 ospf interface brief
+alias exec son6 show ipv6 ospf nei
+banner exec `
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************`
+banner incoming `
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************`
+banner login `
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************`
+!
+line con 0
+ password cisco
+line aux 0
+line vty 0 4
+ exec-timeout 720 0
+ password cisco
+ login local
+ transport input telnet ssh
+!
+no scheduler allocate
+!
+end</entry>
+        </extensions>
+        <interface id="0" name="GigabitEthernet0/1" ipv4="10.0.0.5" netPrefixLenV4="30"/>
+        <interface id="1" name="GigabitEthernet0/2" ipv4="10.0.0.9" netPrefixLenV4="30"/>
+    </node>
+    <node name="R2" type="SIMPLE" subtype="IOSv" location="262,145" ipv4="192.168.0.3">
+        <extensions>
+            <entry key="AutoNetkit.mgmt_ip" type="string"></entry>
+            <entry key="config" type="String">!
+! Last configuration change at 02:36:37 UTC Thu Jul 7 2016
+!
+version 15.6
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname R2
+!
+boot-start-marker
+boot-end-marker
+!
+!
+vrf definition Mgmt-intf
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+vrf definition guest
+ rd 14:14
+ !
+ address-family ipv4
+  route-target export 14:14
+  route-target import 14:14
+ exit-address-family
+ !
+ address-family ipv6
+  route-target export 14:14
+  route-target import 14:14
+ exit-address-family
+!
+enable password cisco
+!
+no aaa new-model
+ethernet lmi ce
+!
+!
+!
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+username cisco privilege 15 secret 5 $1$L1.P$Zr4T6eQxAe9OJGghvLBA7/
+!
+redundancy
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ description Loopback
+ ip address 10.100.100.2 255.255.255.255
+ ip ospf 100 area 0
+ ipv6 address 2001:DB8:2:2::2/128
+ ipv6 ospf 6 area 0
+!
+interface Loopback10
+ vrf forwarding guest
+ ip address 14.14.14.2 255.255.255.255
+ ipv6 address 2001:DB8:14:14::2/128
+!
+interface GigabitEthernet0/0
+ description OOB Management
+ vrf forwarding Mgmt-intf
+ ip address 10.255.0.81 255.255.0.0
+ duplex full
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/1
+ description to R1
+ ip address 10.1.2.2 255.255.255.0
+ ip ospf 100 area 0
+ duplex full
+ speed auto
+ media-type rj45
+ ipv6 address FE80::2 link-local
+ ipv6 address 2001:DB8:1:2::2/64
+ mpls ip
+ ipv6 ospf 6 area 0
+!
+interface GigabitEthernet0/2
+ description to R3
+ ip address 10.2.3.2 255.255.255.0
+ ip ospf 100 area 0
+ duplex full
+ speed auto
+ media-type rj45
+ ipv6 address FE80::2 link-local
+ ipv6 address 2001:DB8:2:3::2/64
+ mpls ip
+ ipv6 ospf 6 area 0
+!
+interface GigabitEthernet0/3
+ description to csr1000v-1
+ ip address 20.2.20.2 255.255.255.0
+ ip ospf cost 1
+ duplex full
+ speed auto
+ media-type rj45
+ ipv6 address 2001:DB8:2:20::2/64
+!
+router ospfv3 6
+ router-id 10.100.100.2
+ !
+ address-family ipv6 unicast
+  default-information originate always
+ exit-address-family
+!
+router ospf 100
+ router-id 10.100.100.2
+ default-information originate always
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+ip ssh server algorithm authentication password
+!
+!
+ip prefix-list Loopbacks seq 5 permit 10.100.100.1/32
+ip prefix-list Loopbacks seq 10 permit 10.100.100.2/32
+ip prefix-list Loopbacks seq 15 permit 10.100.100.3/32
+!
+!
+ipv6 prefix-list Loopbacks6 seq 5 permit 2001:DB8:1:1::1/128
+ipv6 prefix-list Loopbacks6 seq 10 permit 2001:DB8:2:2::2/128
+ipv6 prefix-list Loopbacks6 seq 15 permit 2001:DB8:3:3::3/128
+route-map ALLOW_Loopbacks permit 10
+ match ip address prefix-list Loopbacks
+!
+route-map ALLOW_Loopbacks6 permit 10
+ match ipv6 address prefix-list ALLOW_Loopbacks6
+!
+!
+mpls ldp router-id Loopback0
+!
+control-plane
+!
+alias exec sib show ip int brief
+alias exec sir show ip route
+alias exec son show ip ospf nei
+alias exec soi show ip ospf interface
+alias exec soib show ip ospf interface brief
+alias exec m wr mem
+alias exec bgps show ip bgp sum
+alias exec bgp show ip bgp
+alias exec srs show run | section
+alias exec sri show run | include
+alias exec ct confi t
+alias exec cdpi show cdp interface
+alias exec cdpn show cdp neigh
+alias exec bgpvs sh bgp vpnv4 unicast all summary
+alias exec bgpv6s sh bgp vpnv6 unicast all summary
+alias exec sirg show ip route vrf guest
+alias exec sir6g show ipv6 route vrf guest
+alias exec bgpv6 sh bgp vpnv6 unicast all
+alias exec bgpv sh bgp vpnv4 unicast all
+alias exec sir6 show ipv6 route
+alias exec bgp6s sh ip bgp ipv6 unicast summary
+alias exec bgp6 sh ip bgp ipv6 unicast
+alias exec sib6 sh ipv6 interface brief
+alias exec soi6b sh ipv6 ospf interface brief
+alias exec son6 show ipv6 ospf nei
+banner exec `
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************`
+banner incoming `
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************`
+banner login `
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************`
+!
+line con 0
+ password cisco
+line aux 0
+line vty 0 4
+ exec-timeout 720 0
+ password cisco
+ login local
+ transport input telnet ssh
+!
+no scheduler allocate
+!
+end</entry>
+        </extensions>
+        <interface id="0" name="GigabitEthernet0/1" ipv4="10.0.0.6" netPrefixLenV4="30"/>
+        <interface id="1" name="GigabitEthernet0/2" ipv4="10.0.0.21" netPrefixLenV4="30"/>
+        <interface id="2" name="GigabitEthernet0/3" ipv4="10.0.0.26" netPrefixLenV4="30"/>
+    </node>
+    <node name="R3" type="SIMPLE" subtype="IOSv" location="262,259" ipv4="192.168.0.4">
+        <extensions>
+            <entry key="AutoNetkit.mgmt_ip" type="string"></entry>
+            <entry key="config" type="String">!
+! Last configuration change at 02:36:30 UTC Thu Jul 7 2016
+!
+version 15.6
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname R3
+!
+boot-start-marker
+boot-end-marker
+!
+!
+vrf definition Mgmt-intf
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+vrf definition guest
+ rd 14:14
+ !
+ address-family ipv4
+  route-target export 14:14
+  route-target import 14:14
+ exit-address-family
+ !
+ address-family ipv6
+  route-target export 14:14
+  route-target import 14:14
+ exit-address-family
+!
+enable password cisco
+!
+no aaa new-model
+ethernet lmi ce
+!
+!
+!
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+username cisco privilege 15 secret 5 $1$Gtik$JRiVUPvMUqToMcLiK/65f1
+!
+redundancy
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ description Loopback
+ ip address 10.100.100.3 255.255.255.255
+ ip ospf 100 area 0
+ ipv6 address 2001:DB8:3:3::3/128
+ ipv6 ospf 6 area 0
+!
+interface Loopback10
+ vrf forwarding guest
+ ip address 14.14.14.3 255.255.255.255
+ ipv6 address 2001:DB8:14:14::3/128
+!
+interface GigabitEthernet0/0
+ description OOB Management
+ vrf forwarding Mgmt-intf
+ ip address 10.255.0.82 255.255.0.0
+ duplex full
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/1
+ description to R1
+ ip address 10.1.3.3 255.255.255.0
+ ip ospf 100 area 0
+ duplex full
+ speed auto
+ media-type rj45
+ ipv6 address FE80::3 link-local
+ ipv6 address 2001:DB8:1:3::3/64
+ mpls ip
+ ipv6 ospf 6 area 0
+!
+interface GigabitEthernet0/2
+ description to R2
+ ip address 10.2.3.3 255.255.255.0
+ ip ospf 100 area 0
+ duplex full
+ speed auto
+ media-type rj45
+ ipv6 address FE80::3 link-local
+ ipv6 address 2001:DB8:2:3::3/64
+ mpls ip
+ ipv6 ospf 6 area 0
+!
+interface GigabitEthernet0/3
+ description to R30
+ ip address 30.3.30.3 255.255.255.0
+ duplex full
+ speed auto
+ media-type rj45
+ ipv6 address 2001:DB8:3:30::3/64
+!
+router ospfv3 6
+ router-id 10.100.100.3
+ !
+ address-family ipv6 unicast
+  default-information originate always
+ exit-address-family
+!
+router ospf 100
+ router-id 10.100.100.3
+ default-information originate always
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+ip ssh server algorithm authentication password
+!
+!
+ip prefix-list Loopbacks seq 5 permit 10.100.100.1/32
+ip prefix-list Loopbacks seq 10 permit 10.100.100.2/32
+ip prefix-list Loopbacks seq 15 permit 10.100.100.3/32
+!
+!
+ipv6 prefix-list Loopbacks6 seq 5 permit 2001:DB8:1:1::1/128
+ipv6 prefix-list Loopbacks6 seq 10 permit 2001:DB8:2:2::2/128
+ipv6 prefix-list Loopbacks6 seq 15 permit 2001:DB8:3:3::3/128
+route-map ALLOW_Loopbacks permit 10
+ match ip address prefix-list Loopbacks
+!
+route-map ALLOW_Loopbacks6 permit 10
+ match ipv6 address prefix-list ALLOW_Loopbacks6
+!
+!
+mpls ldp router-id Loopback0
+!
+control-plane
+!
+alias exec sib show ip int brief
+alias exec sir show ip route
+alias exec son show ip ospf nei
+alias exec soi show ip ospf interface
+alias exec soib show ip ospf interface brief
+alias exec m wr mem
+alias exec bgps show ip bgp sum
+alias exec bgp show ip bgp
+alias exec srs show run | section
+alias exec sri show run | include
+alias exec ct confi t
+alias exec cdpi show cdp interface
+alias exec cdpn show cdp neigh
+alias exec bgpvs sh bgp vpnv4 unicast all summary
+alias exec bgpv6s sh bgp vpnv6 unicast all summary
+alias exec sirg show ip route vrf guest
+alias exec sir6g show ipv6 route vrf guest
+alias exec bgpv6 sh bgp vpnv6 unicast all
+alias exec bgpv sh bgp vpnv4 unicast all
+alias exec sir6 show ipv6 route
+alias exec bgp6s sh ip bgp ipv6 unicast summary
+alias exec bgp6 sh ip bgp ipv6 unicast
+alias exec sib6 sh ipv6 interface brief
+alias exec soi6b sh ipv6 ospf interface brief
+alias exec son6 show ipv6 ospf nei
+banner exec `
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************`
+banner incoming `
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************`
+banner login `
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************`
+!
+line con 0
+ password cisco
+line aux 0
+line vty 0 4
+ exec-timeout 720 0
+ password cisco
+ login local
+ transport input telnet ssh
+!
+no scheduler allocate
+!
+end</entry>
+        </extensions>
+        <interface id="0" name="GigabitEthernet0/1" ipv4="10.0.0.10" netPrefixLenV4="30"/>
+        <interface id="1" name="GigabitEthernet0/2" ipv4="10.0.0.22" netPrefixLenV4="30"/>
+        <interface id="2" name="GigabitEthernet0/3" ipv4="10.0.0.13" netPrefixLenV4="30"/>
+    </node>
+    <node name="R20" type="SIMPLE" subtype="CSR1000v" location="461,145" ipv4="192.168.0.6">
+        <extensions>
+            <entry key="AutoNetkit.mgmt_ip" type="string"></entry>
+            <entry key="config" type="String">!
+! Last configuration change at 02:36:16 UTC Thu Jul 7 2016
+!
+version 15.6
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no platform punt-keepalive disable-kernel-core
+platform console serial
+!
+hostname R20
+!
+boot-start-marker
+boot-end-marker
+!
+!
+vrf definition Mgmt-intf
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+enable secret 4 tnhtc92DXBhelxjYk8LWJrPV36S2i4ntXrpb4RFmfqY
+enable password cisco
+!
+no aaa new-model
+!
+!
+!
+!
+!
+!
+!
+!
+!
+
+
+
+no ip domain lookup
+!
+!
+!
+ipv6 unicast-routing
+!
+!
+!
+!
+!
+!
+!
+subscriber templating
+!
+!
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+crypto pki trustpoint TP-self-signed-2125636043
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-2125636043
+ revocation-check none
+ rsakeypair TP-self-signed-2125636043
+!
+crypto pki trustpoint TP-self-signed-551134338
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-551134338
+ revocation-check none
+ rsakeypair TP-self-signed-551134338
+!
+crypto pki trustpoint TP-self-signed-3935311337
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-3935311337
+ revocation-check none
+ rsakeypair TP-self-signed-3935311337
+!
+crypto pki trustpoint TP-self-signed-2212623089
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-2212623089
+ revocation-check none
+ rsakeypair TP-self-signed-2212623089
+!
+crypto pki trustpoint TP-self-signed-1385238123
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-1385238123
+ revocation-check none
+ rsakeypair TP-self-signed-1385238123
+!
+crypto pki trustpoint TP-self-signed-389435522
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-389435522
+ revocation-check none
+ rsakeypair TP-self-signed-389435522
+!
+crypto pki trustpoint TP-self-signed-4231585359
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-4231585359
+ revocation-check none
+ rsakeypair TP-self-signed-4231585359
+!
+crypto pki trustpoint TP-self-signed-347043267
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-347043267
+ revocation-check none
+ rsakeypair TP-self-signed-347043267
+!
+crypto pki trustpoint TP-self-signed-4070236613
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-4070236613
+ revocation-check none
+ rsakeypair TP-self-signed-4070236613
+!
+crypto pki trustpoint TP-self-signed-1299424805
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-1299424805
+ revocation-check none
+ rsakeypair TP-self-signed-1299424805
+!
+!
+crypto pki certificate chain TP-self-signed-2125636043
+ certificate self-signed 01 nvram:IOS-Self-Sig#1.cer
+crypto pki certificate chain TP-self-signed-551134338
+crypto pki certificate chain TP-self-signed-3935311337
+crypto pki certificate chain TP-self-signed-2212623089
+crypto pki certificate chain TP-self-signed-1385238123
+crypto pki certificate chain TP-self-signed-389435522
+crypto pki certificate chain TP-self-signed-4231585359
+crypto pki certificate chain TP-self-signed-347043267
+crypto pki certificate chain TP-self-signed-4070236613
+crypto pki certificate chain TP-self-signed-1299424805
+!
+!
+!
+!
+!
+!
+!
+license udi pid CSR1000V sn 9YOS5LRTQBS
+license accept end user agreement
+license boot level ax
+!
+spanning-tree extend system-id
+!
+username cisco privilege 15 secret 5 $1$MZ35$5Ddd6WUDMRMj5pYG8cIno.
+!
+redundancy
+!
+!
+!
+!
+!
+cdp run
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+! 
+! 
+! 
+! 
+! 
+! 
+!
+!
+interface Loopback0
+ description Loopback
+ ip address 20.100.100.20 255.255.255.255
+ ipv6 address 2001:DB8:20:20::20/128
+!
+interface GigabitEthernet1
+ description OOB Management
+ vrf forwarding Mgmt-intf
+ ip address 10.255.0.83 255.255.0.0
+ negotiation auto
+!
+interface GigabitEthernet2
+ description to R2
+ ip address 20.2.20.20 255.255.255.0
+ negotiation auto
+ ipv6 address FE80::20 link-local
+ ipv6 address 2001:DB8:2:20::20/64
+ ipv6 enable
+ cdp enable
+!
+interface GigabitEthernet3
+ description to Internet
+ ip address 5.20.40.20 255.255.255.0
+ negotiation auto
+ ipv6 address FE80::20 link-local
+ ipv6 address 2001:DB8:20:40::20/64
+ ipv6 enable
+ cdp enable
+!
+router bgp 20
+ bgp router-id 20.100.100.20
+ bgp log-neighbor-changes
+ neighbor 5.20.40.40 remote-as 40
+ neighbor 20.2.20.2 remote-as 100
+ neighbor 2001:DB8:2:20::2 remote-as 100
+ neighbor 2001:DB8:20:40::40 remote-as 40
+ !
+ address-family ipv4
+  network 20.100.100.20 mask 255.255.255.255
+  neighbor 5.20.40.40 activate
+  neighbor 5.20.40.40 send-community both
+  neighbor 20.2.20.2 activate
+  neighbor 20.2.20.2 send-community
+  no neighbor 2001:DB8:2:20::2 activate
+  no neighbor 2001:DB8:20:40::40 activate
+ exit-address-family
+ !
+ address-family ipv6
+  neighbor 2001:DB8:2:20::2 activate
+  neighbor 2001:DB8:2:20::2 send-community both
+  neighbor 2001:DB8:20:40::40 activate
+  neighbor 2001:DB8:20:40::40 send-community both
+ exit-address-family
+!
+!
+virtual-service csr_mgmt
+!
+ip forward-protocol nd
+!
+ip bgp-community new-format
+no ip http server
+ip http secure-server
+ip ssh server algorithm authentication password
+!
+!
+!
+!
+!
+control-plane
+!
+ !
+ !
+ !
+ !
+!
+!
+!
+!
+alias exec sib show ip int brief
+alias exec sir show ip route
+alias exec son show ip ospf nei
+alias exec soi show ip ospf interface
+alias exec soib show ip ospf interface brief
+alias exec m wr mem
+alias exec bgps show ip bgp sum
+alias exec bgp show ip bgp
+alias exec srs show run | section
+alias exec sri show run | include
+alias exec ct confi t
+alias exec cdpi show cdp interface
+alias exec cdpn show cdp neigh
+alias exec sir6 show ipv6 route
+alias exec bgp6s sh ip bgp ipv6 unicast summary
+alias exec bgp6 sh ip bgp ipv6 unicast
+alias exec sib6 sh ipv6 interface brief
+!
+line con 0
+ password cisco
+ stopbits 1
+line vty 0 4
+ exec-timeout 720 0
+ password cisco
+ login local
+ transport input telnet ssh
+!
+!
+end</entry>
+        </extensions>
+        <interface id="0" name="GigabitEthernet2" ipv4="10.0.0.25" netPrefixLenV4="30"/>
+        <interface id="1" name="GigabitEthernet3" ipv4="10.0.0.29" netPrefixLenV4="30"/>
+    </node>
+    <node name="R30" type="SIMPLE" subtype="IOS XRv" location="470,264" ipv4="192.168.0.2">
+        <extensions>
+            <entry key="AutoNetkit.mgmt_ip" type="string"></entry>
+            <entry key="config" type="String">!! IOS XR Configuration 5.3.2
+!! Last configuration change at Thu Jul  7 02:12:10 2016 by CVAC
+!
+!  IOS-XR Config generated on 2016-02-02 20:10
+! by autonetkit_0.20.9
+hostname R30
+service timestamps log datetime msec
+service timestamps debug datetime msec
+telnet vrf default ipv4 server max-servers 10
+telnet vrf Mgmt-intf ipv4 server max-servers 10
+domain lookup disable
+cdp
+vrf Mgmt-intf
+ address-family ipv4 unicast
+ !
+ address-family ipv6 unicast
+ !
+!
+line template vty
+ timestamp
+ exec-timeout 720 0
+!
+line console
+ exec-timeout 0 0
+!
+line default
+ exec-timeout 720 0
+!
+vty-pool default 0 50
+alias exec m wr mem
+alias exec ct confi t
+alias exec bgp show ip bgp
+alias exec sib show ip int brief
+alias exec sir show ip route
+alias exec soi show ip ospf interface
+alias exec son show ip ospf nei
+alias exec sri show run | include
+alias exec srs show run | section
+alias exec bgp6 sh ip bgp ipv6 unicast
+alias exec bgps show ip bgp sum
+alias exec cdpi show cdp interface
+alias exec cdpn show cdp neigh
+alias exec sib6 sh ipv6 interface brief
+alias exec sir6 show ipv6 route
+alias exec soib show ip ospf interface brief
+alias exec bgp6s sh ip bgp ipv6 unicast summary
+control-plane
+ management-plane
+  inband
+   interface all
+    allow all
+   !
+  !
+ !
+!
+interface Loopback0
+ description Loopback
+ ipv4 address 30.100.100.30 255.255.255.255
+ ipv6 address 2001:db8:30:30::30/128
+!
+interface MgmtEth0/0/CPU0/0
+ description OOB Management
+ ! Configured on launch
+ vrf Mgmt-intf
+ ipv4 address 10.255.0.84 255.255.0.0
+!
+interface GigabitEthernet0/0/0/0
+ description to R3
+ cdp
+ ipv4 address 30.3.30.30 255.255.255.0
+ ipv6 address 2001:db8:3:30::30/64
+!
+interface GigabitEthernet0/0/0/1
+ description to iosv-4
+ cdp
+ ipv4 address 5.30.40.30 255.255.255.0
+ ipv6 address 2001:db8:30:40::30/64
+!
+route-policy bgp_in
+  pass
+end-policy
+!
+route-policy bgp_out
+  pass
+end-policy
+!
+route-policy pass-all
+  pass
+end-policy
+!
+router bgp 30
+ bgp router-id 30.100.100.30
+ bgp log neighbor changes detail
+ address-family ipv4 unicast
+ !
+ address-family ipv6 unicast
+ !
+ neighbor 30.3.30.3
+  remote-as 10
+  timers 3 9 9
+  address-family ipv4 unicast
+   route-policy pass-all in
+   route-policy pass-all out
+  !
+ !
+ neighbor 5.30.40.40
+  remote-as 40
+  address-family ipv4 unicast
+   route-policy pass-all in
+   route-policy pass-all out
+  !
+ !
+ neighbor 2001:db8:3:30::3
+  remote-as 10
+  timers 3 9 9
+  address-family ipv6 unicast
+   route-policy pass-all in
+   route-policy pass-all out
+  !
+ !
+ neighbor 2001:db8:30:40::40
+  remote-as 40
+  address-family ipv6 unicast
+   route-policy pass-all in
+   route-policy pass-all out
+  !
+ !
+!
+ssh server v2
+ssh server vrf Mgmt-intf
+end</entry>
+        </extensions>
+        <interface id="0" name="GigabitEthernet0/0/0/0" ipv4="10.0.0.14" netPrefixLenV4="30"/>
+        <interface id="1" name="GigabitEthernet0/0/0/1" ipv4="10.0.0.18" netPrefixLenV4="30"/>
+    </node>
+    <node name="R40" type="SIMPLE" subtype="IOSv" location="626,195" ipv4="192.168.0.5">
+        <extensions>
+            <entry key="AutoNetkit.mgmt_ip" type="string"></entry>
+            <entry key="config" type="String">!
+! Last configuration change at 02:37:07 UTC Thu Jul 7 2016
+!
+version 15.6
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname Internet
+!
+boot-start-marker
+boot-end-marker
+!
+!
+vrf definition Mgmt-intf
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+enable password cisco
+!
+no aaa new-model
+ethernet lmi ce
+!
+!
+!
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain lookup
+ip cef
+ipv6 unicast-routing
+ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+username cisco privilege 15 secret 5 $1$r4Gn$pI2v8Gs98zLXsDA/ysma8.
+!
+redundancy
+!
+!
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ description Loopback
+ ip address 40.100.100.40 255.255.255.255
+ ipv6 address 2001:DB8:40:40::40/128
+!
+interface Loopback40
+ ip address 40.40.40.1 255.255.255.0
+ ipv6 address 2001:DB8:100:100::1/64
+!
+interface GigabitEthernet0/0
+ description OOB Management
+ vrf forwarding Mgmt-intf
+ ip address 10.255.0.86 255.255.0.0
+ duplex full
+ speed auto
+ media-type rj45
+!
+interface GigabitEthernet0/1
+ description to R20
+ ip address 5.20.40.40 255.255.255.0
+ duplex full
+ speed auto
+ media-type rj45
+ ipv6 address FE80::40 link-local
+ ipv6 address 2001:DB8:20:40::40/64
+ ipv6 enable
+!
+interface GigabitEthernet0/2
+ description to iosxrv-1
+ ip address 5.30.40.40 255.255.255.0
+ ip ospf cost 1
+ duplex full
+ speed auto
+ media-type rj45
+ ipv6 address 2001:DB8:30:40::40/64
+!
+router bgp 40
+ bgp router-id 40.100.100.40
+ bgp log-neighbor-changes
+ neighbor 5.20.40.20 remote-as 20
+ neighbor 5.30.40.30 remote-as 30
+ neighbor 2001:DB8:20:40::20 remote-as 20
+ neighbor 2001:DB8:30:40::30 remote-as 30
+ !
+ address-family ipv4
+  network 40.40.40.0 mask 255.255.255.0
+  network 40.100.100.40 mask 255.255.255.255
+  neighbor 5.20.40.20 activate
+  neighbor 5.20.40.20 send-community
+  neighbor 5.20.40.20 route-map setcommunity out
+  neighbor 5.30.40.30 activate
+  neighbor 5.30.40.30 send-community
+  neighbor 5.30.40.30 route-map setcommunity out
+  no neighbor 2001:DB8:20:40::20 activate
+  no neighbor 2001:DB8:30:40::30 activate
+ exit-address-family
+ !
+ address-family ipv6
+  network 2001:DB8:40:40::40/128
+  network 2001:DB8:100:100::/64
+  neighbor 2001:DB8:20:40::20 activate
+  neighbor 2001:DB8:20:40::20 send-community
+  neighbor 2001:DB8:20:40::20 route-map setcommunity out
+  neighbor 2001:DB8:30:40::30 activate
+  neighbor 2001:DB8:30:40::30 send-community
+  neighbor 2001:DB8:30:40::30 route-map setcommunity out
+ exit-address-family
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+ip ssh server algorithm authentication password
+!
+!
+route-map setcommunity permit 10
+ set community 2621441
+!
+!
+!
+control-plane
+!
+alias exec sib show ip int brief
+alias exec sir show ip route
+alias exec son show ip ospf nei
+alias exec soi show ip ospf interface
+alias exec soib show ip ospf interface brief
+alias exec m wr mem
+alias exec bgps show ip bgp sum
+alias exec bgp show ip bgp
+alias exec srs show run | section
+alias exec sri show run | include
+alias exec ct confi t
+alias exec cdpi show cdp interface
+alias exec cdpn show cdp neigh
+alias exec sir6 show ipv6 route
+alias exec bgp6s sh ip bgp ipv6 unicast summary
+alias exec bgp6 sh ip bgp ipv6 unicast
+alias exec sib6 sh ipv6 interface brief
+banner exec `
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************`
+banner incoming `
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************`
+banner login `
+**************************************************************************
+* IOSv is strictly limited to use for evaluation, demonstration and IOS  *
+* education. IOSv is provided as-is and is not supported by Cisco's      *
+* Technical Advisory Center. Any use or disclosure, in whole or in part, *
+* of the IOSv Software or Documentation to any third party for any       *
+* purposes is expressly prohibited except as otherwise authorized by     *
+* Cisco in writing.                                                      *
+**************************************************************************`
+!
+line con 0
+ password cisco
+line aux 0
+line vty 0 4
+ exec-timeout 720 0
+ password cisco
+ login local
+ transport input telnet ssh
+!
+no scheduler allocate
+!
+end</entry>
+        </extensions>
+        <interface id="0" name="GigabitEthernet0/1" ipv4="10.0.0.30" netPrefixLenV4="30"/>
+        <interface id="1" name="GigabitEthernet0/2" ipv4="10.0.0.17" netPrefixLenV4="30"/>
+    </node>
+    <connection dst="/virl:topology/virl:node[2]/virl:interface[1]" src="/virl:topology/virl:node[1]/virl:interface[1]"/>
+    <connection dst="/virl:topology/virl:node[3]/virl:interface[1]" src="/virl:topology/virl:node[1]/virl:interface[2]"/>
+    <connection dst="/virl:topology/virl:node[3]/virl:interface[2]" src="/virl:topology/virl:node[2]/virl:interface[2]"/>
+    <connection dst="/virl:topology/virl:node[4]/virl:interface[1]" src="/virl:topology/virl:node[2]/virl:interface[3]"/>
+    <connection dst="/virl:topology/virl:node[3]/virl:interface[3]" src="/virl:topology/virl:node[5]/virl:interface[1]"/>
+    <connection dst="/virl:topology/virl:node[6]/virl:interface[1]" src="/virl:topology/virl:node[4]/virl:interface[2]"/>
+    <connection dst="/virl:topology/virl:node[6]/virl:interface[2]" src="/virl:topology/virl:node[5]/virl:interface[2]"/>
+</topology>
